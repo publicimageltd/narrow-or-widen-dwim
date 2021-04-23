@@ -90,7 +90,7 @@ defun, whichever applies first."
 	 (narrow-or-widen--org-narrow n))
 	;; special handling in latex mode buffers:
 	((derived-mode-p 'latex-mode)
-	 (LaTeX-narrow-to-environment))
+	 (LaTeX-narrow-to-environment n))
 	;; special handling in prog mode buffers:
 	((derived-mode-p 'prog-mode)
 	 (narrow-to-defun))
