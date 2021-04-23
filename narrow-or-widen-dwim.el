@@ -69,9 +69,10 @@ determine the number of levels 'up'"
    ((ignore-errors (org-narrow-to-block) t))
    (t
     (progn
-      (when (> arg 1)
-	(outline-up-heading (ceiling (/ arg 4)) t))
-      (org-narrow-to-subtree)))))
+      (save-excursion
+	(when (> arg 1)
+	  (outline-up-heading (ceiling (/ arg 4)) t))
+	(org-narrow-to-subtree))))))
 
 ;;;###autoload
 (defun narrow-or-widen-dwim (&optional n)
