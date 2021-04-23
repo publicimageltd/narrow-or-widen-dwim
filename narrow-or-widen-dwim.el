@@ -81,8 +81,7 @@ defun, whichever applies first."
 	;; narrow to region, if defined:
 	((region-active-p)
 	 (progn
-	   (narrow-to-region (region-beginning)
-			     (region-end))
+	   (narrow-to-region (region-beginning) (region-end))
 	   (deactivate-mark)
 	   (goto-char (point-min))))
 	;; special handling in org mode buffers:
