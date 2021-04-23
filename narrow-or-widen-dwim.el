@@ -29,22 +29,23 @@
 ;; Declare all major mode specific functions to avoid requir'ing them
 ;; all. They will be called only if the mode is loaded, anyways.
 
-(declare-function "org-narrow-to-block"
+(declare-function org-narrow-to-block
 		  "org"
 		  ())
-(declare-function "org-narrow-to-subtree"
+(declare-function org-narrow-to-subtree
 		  "org"
 		  ())
-(declare-function "org-edit-src-code"
+(declare-function org-edit-src-code
 		  "org-src"
 		  (&optional code edit-buffer-name))
-(declare-function "outline-up-heading"
+(declare-function outline-up-heading
 		  "outline"
 		  (arg &optional invisible-ok))
-(declare-function "LaTeX-narrow-to-environment"
+(declare-function LaTeX-narrow-to-environment
 		  "latex"
 		  (&optional COUNT))
-(declare-function "narrow-to-defun" "lisp"
+(declare-function narrow-to-defun
+		  "lisp"
 		  (&optional INCLUDE-COMMENTS))
 
 ;;; * Narrow or widen dwim
