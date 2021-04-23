@@ -83,11 +83,10 @@ defun, whichever applies first."
   (cond (;; widen, if narrowed:
 	 (buffer-narrowed-p)
 	 (progn
-	   (let ((current-offset (count-screen-lines (window-start) (point))))
-	     (widen)
-	     (when narrow-or-widen-dwim--window-start
-	       (set-window-start (selected-window) narrow-or-widen-dwim--window-start t)
-	       (setq narrow-or-widen-dwim--window-start nil)))))
+	   (widen)
+	   (when narrow-or-widen-dwim--window-start
+	     (set-window-start (selected-window) narrow-or-widen-dwim--window-start t)
+	     (setq narrow-or-widen-dwim--window-start nil))))
 	;; narrow to region, if defined:
 	((region-active-p)
 	 (progn
