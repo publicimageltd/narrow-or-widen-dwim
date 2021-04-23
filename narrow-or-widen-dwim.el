@@ -24,6 +24,11 @@
 
 ;;; Code:
 
+;;; * Store line position when narrowing
+
+(defvar narrow-or-widen-dwim--last-point nil
+  "Position before narrowing.")
+
 ;;; * Declare major mode specific functions
 
 ;; Declare all major mode specific functions to avoid requir'ing them
@@ -92,7 +97,9 @@ defun, whichever applies first."
 	 (LaTeX-narrow-to-environment n))
 	;; special handling in prog mode buffers:
 	((derived-mode-p 'prog-mode)
-	 (narrow-to-defun n))
+	 (let* ((arg (not (eq n 1)))
+		(narrow-to-defun-include-comments arg))
+	   (narrow-to-defun arg)))
 	;; else we don't know what to do:
 	(t (user-error "No suitable narrowing command available for this major mode"))))
 
