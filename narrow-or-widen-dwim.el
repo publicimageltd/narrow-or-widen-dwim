@@ -54,7 +54,7 @@
 		  (&optional INCLUDE-COMMENTS))
 
 ;;; * Narrow or widen dwim
-  
+
 (defun narrow-or-widen--org-narrow (&optional arg)
   "In org mode, dwim-narrow.
 Prefix ARG is used to narrow to the next 'upper' top tree level.
@@ -101,7 +101,7 @@ defun, whichever applies first."
 	   (narrow-or-widen--org-narrow n)))
 	;; special handling in latex mode buffers:
 	((derived-mode-p 'latex-mode)
-	 (progn 
+	 (progn
 	   (setq narrow-or-widen-dwim--window-start (window-start))
 	   (LaTeX-narrow-to-environment n)))
 	;; special handling in prog mode buffers:
