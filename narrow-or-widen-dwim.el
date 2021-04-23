@@ -90,8 +90,11 @@ determine the number of levels 'up'"
 	;; special handling in latex mode buffers:
 	((derived-mode-p 'latex-mode)
 	 (LaTeX-narrow-to-environment))
-	;; fallback:
-	(t (narrow-to-defun))))
+	;; special handling in prog mode buffers:
+	((derived-mode-p 'prog-mode)
+	 (narrow-to-defun))
+	;; else we don't know what to do:
+	(t (user-error "No suitable narrowing command available for this major mode"))))
 
 (provide 'narrow-or-widen-dwim)
 ;;; narrow-or-widen-dwim.el ends here
