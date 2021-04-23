@@ -1,6 +1,6 @@
 ;;; narrow-or-widen-dwim.el --- Add more intelligence to narrowing or widening  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  
+;; Copyright (C) 2021
 
 ;; Author:  <joerg@joergvolbers.de>
 ;; Keywords: outlines, tools
@@ -49,18 +49,29 @@
 
 ;;; * Narrow or widen dwim
 
+(defun narrow-or-widen--org-narrow (&optional arg)
+  "In org mode, dwim-narrow.
+Prefix ARG is used to narrow to the next 'upper' top tree level.
+The numeric argument is interpreted unorthodoxically: One
+prefix (C-u) means 'one top level up', two prefixes (C-u C-u)
+means 'two levels up', etc. Real numeric arguments (like C-u 3)
+should not be used; they are divided by four and rounded up to
+determine the number of levels 'up'"
+  (cond
+   ((ignore-errors (org-edit-src-code) t)
+    (delete-other-windows))
+   ((ignore-errors (org-narrow-to-block) t))
+   (t
+    (progn
+      (when (> arg 1)
+	(outline-up-heading (ceiling (/ arg 4)) t))
+      (org-narrow-to-subtree)))))
+
 ;;;###autoload
 (defun narrow-or-widen-dwim (&optional n)
     "Widen if buffer is narrowed, narrow-dwim otherwise.
 Dwim means: region, org-src-block, org-subtree, or
-defun, whichever applies first.
-
-In org-mode, prefix N is used to narrow to the next 'upper' top
-tree level. The numeric argument is interpreted unorthodoxically:
-One prefix (C-u) means 'one top level up', two prefixes (C-u C-u)
-means 'two levels up', etc. Real numeric arguments (like C-u 3)
-should not be used; they are divided by four and rounded up to
-determine the number of levels 'up'"
+defun, whichever applies first."
   (interactive "p")
   (declare (interactive-only))
   (cond (;; widen, if narrowed:
@@ -75,18 +86,7 @@ determine the number of levels 'up'"
 	   (goto-char (point-min))))
 	;; special handling in org mode buffers:
 	((derived-mode-p 'org-mode)
-	 ;; `org-edit-src-code' is not a real narrowing
-	 ;; command. Remove this first conditional if
-	 ;; you don't want it.
-	 (cond
-	  ((ignore-errors (org-edit-src-code) t)
-	   (delete-other-windows))
-	  ((ignore-errors (org-narrow-to-block) t))
-	  (t
-	   (progn
-	     (when (> n 1)
-	       (outline-up-heading (ceiling (/ n 4)) t))
-	     (org-narrow-to-subtree)))))
+	 (narrow-or-widen--org-narrow n))
 	;; special handling in latex mode buffers:
 	((derived-mode-p 'latex-mode)
 	 (LaTeX-narrow-to-environment))
