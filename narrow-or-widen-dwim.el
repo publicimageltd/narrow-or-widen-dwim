@@ -63,6 +63,8 @@ prefix (C-u) means 'one top level up', two prefixes (C-u C-u)
 means 'two levels up', etc. Real numeric arguments (like C-u 3)
 should not be used; they are divided by four and rounded up to
 determine the number of levels 'up'"
+  (unless (mod arg 4)
+    (user-error "Prefix arg has to be a multiple of 4"))
   (cond
    ((ignore-errors (org-edit-src-code) t)
     (delete-other-windows))
