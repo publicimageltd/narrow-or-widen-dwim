@@ -93,7 +93,7 @@ defun, whichever applies first."
 	 (LaTeX-narrow-to-environment n))
 	;; special handling in prog mode buffers:
 	((derived-mode-p 'prog-mode)
-	 (narrow-to-defun))
+	 (narrow-to-defun n))
 	;; else we don't know what to do:
 	(t (user-error "No suitable narrowing command available for this major mode"))))
 
