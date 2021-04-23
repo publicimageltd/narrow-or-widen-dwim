@@ -26,8 +26,8 @@
 
 ;;; * Store line position when narrowing
 
-(defvar narrow-or-widen-dwim--last-point nil
-  "Position before narrowing.")
+(defvar narrow-or-widen-dwim--window-start nil
+  "INTERNAL. Position correction when widening again.")
 
 ;;; * Declare major mode specific functions
 
@@ -54,7 +54,7 @@
 		  (&optional INCLUDE-COMMENTS))
 
 ;;; * Narrow or widen dwim
-
+  
 (defun narrow-or-widen--org-narrow (&optional arg)
   "In org mode, dwim-narrow.
 Prefix ARG is used to narrow to the next 'upper' top tree level.
@@ -82,23 +82,34 @@ defun, whichever applies first."
   (declare (interactive-only))
   (cond (;; widen, if narrowed:
 	 (buffer-narrowed-p)
-	 (widen))
+	 (progn
+	   (let ((current-offset (count-screen-lines (window-start) (point))))
+	     (widen)
+	     (when narrow-or-widen-dwim--window-start
+	       (set-window-start (selected-window) narrow-or-widen-dwim--window-start t)
+	       (setq narrow-or-widen-dwim--window-start nil)))))
 	;; narrow to region, if defined:
 	((region-active-p)
 	 (progn
+	   (setq narrow-or-widen-dwim--window-start (window-start))
 	   (narrow-to-region (region-beginning) (region-end))
 	   (deactivate-mark)
 	   (goto-char (point-min))))
 	;; special handling in org mode buffers:
 	((derived-mode-p 'org-mode)
-	 (narrow-or-widen--org-narrow n))
+	 (progn
+	   (setq narrow-or-widen-dwim--window-start (window-start))
+	   (narrow-or-widen--org-narrow n)))
 	;; special handling in latex mode buffers:
 	((derived-mode-p 'latex-mode)
-	 (LaTeX-narrow-to-environment n))
+	 (progn 
+	   (setq narrow-or-widen-dwim--window-start (window-start))
+	   (LaTeX-narrow-to-environment n)))
 	;; special handling in prog mode buffers:
 	((derived-mode-p 'prog-mode)
 	 (let* ((arg (not (eq n 1)))
 		(narrow-to-defun-include-comments arg))
+	   (setq narrow-or-widen-dwim--window-start (window-start))
 	   (narrow-to-defun arg)))
 	;; else we don't know what to do:
 	(t (user-error "No suitable narrowing command available for this major mode"))))
