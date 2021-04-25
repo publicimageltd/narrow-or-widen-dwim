@@ -1,0 +1,43 @@
+* Narrow or widen dwim
+
+The name says it all: This package just wraps one single convenience
+function for narrowing or widen the entity at point. I moved it from
+my =.init.el= to a separate package, and so why not make it public.
+
+* Installation
+
+I use =quelpa= to download and install github packages; you might as
+well use =straight= or just copy the =.el= file. Here's my personal setup:
+
+#+begin_src emacs-lisp
+;; * Narrow or widen dwim
+(use-package narrow-or-widen-dwim
+  :quelpa (narrow-or-widen-dwim
+	   :fetcher github
+	   :repo "publicimageltd/narrow-or-widen-dwim")
+  :bind*
+  (("C-x n" . narrow-or-widen-dwim)))
+#+end_src
+
+* Usage
+
+If narrowing is on, widen the biffer. Else move point to an entity and
+call this function to narrow on it. That means:
+
+ - If a region is active, narrow on the region.
+ - If you are on a defun or anything conceptually similar which is
+   recognized in you programming language mode, narrow on that function.
+ - If you are on an org subtree, narrow buffer to this tree.
+ - If you are on an org source code block, open it in the editor
+   (that's a /kind/ of narrowing).
+ - If you are in a Latex environment, narrow on that environment.
+
+If called with prefix (=C-u=), narrow with a wider scope. E.g. if you
+press two time =C-u= before calling the function, go up two levels
+before narrowing. If you are on a defun, also include the comments
+above.
+
+* Credits
+
+I saw this function once somewhere on the blog of =endless parentheses=.
+I copied it and changed it to my need. Here we are.
