@@ -37,9 +37,9 @@ point. That means:
  - If you are in a Latex environment, narrow on that environment.
 
 If called with prefix (=C-u=), narrow with a wider scope. E.g. if you
-press two time =C-u= before calling the function, go up two levels
-before narrowing. If you are on a =defun=, widening the scope means to
-include the comments before the function definition.
+press two time =C-u= before calling the function, in org mode, go up two
+levels before narrowing. If you are on a =defun=, widening the scope
+means to include the comments before the function definition.
 
 ** narrow-or-widen-dwim-clone
 
