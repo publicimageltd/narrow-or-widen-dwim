@@ -137,10 +137,14 @@ defun, whichever applies first."
   "Calls `narrow-or-widen-dwim' in a new indirect buffer."
   (interactive "p")
   (declare (interactive-only))
-  (let* ((cloned-buffer (clone-indirect-buffer nil nil t)))
+  (let* ((calling-buffer (current-buffer))
+         (cloned-buffer (clone-indirect-buffer nil nil t)))
     (narrow-or-widen--switch-buffer-niceley cloned-buffer)
     (with-current-buffer cloned-buffer
-      (narrow-or-widen-dwim n))))
+      (narrow-or-widen-dwim n))
+    (with-current-buffer calling-buffer
+      (when (region-active-p)
+        (deactivate-mark)))))
 
 (provide 'narrow-or-widen-dwim)
 ;;; narrow-or-widen-dwim.el ends here
