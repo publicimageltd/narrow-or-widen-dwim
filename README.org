@@ -1,8 +1,8 @@
 * Narrow or widen dwim
 
-The name says it all: This package just wraps one single convenience
-function for narrowing or widen the entity at point. I moved it from
-my =.init.el= to a separate package, and so why not make it public.
+The name says it all: This package wraps convenience functions for
+narrowing or widening the entity at point. I moved it from my =.init.el=
+to a separate package, and so why not make it public.
 
 * Installation
 
@@ -10,23 +10,27 @@ I use =quelpa= to download and install github packages; you might as
 well use =straight= or just copy the =.el= file. Here's my personal setup:
 
 #+begin_src emacs-lisp
-;; * Narrow or widen dwim
-(use-package narrow-or-widen-dwim
-  :quelpa (narrow-or-widen-dwim
-	   :fetcher github
-	   :repo "publicimageltd/narrow-or-widen-dwim")
-  :bind*
-  (("C-x n" . narrow-or-widen-dwim)))
+  ;; * Narrow or widen dwim
+  (use-package narrow-or-widen-dwim
+    :quelpa (narrow-or-widen-dwim
+	     :fetcher github
+	     :repo "publicimageltd/narrow-or-widen-dwim")
+    :bind*
+    (("C-x n" . narrow-or-widen-dwim)
+     ("C-x i" . narrow-or-widwn-dwim-clone)))
 #+end_src
 
 * Usage
 
-If narrowing is on, widen the biffer. Else move point to an entity and
-call this function to narrow on it. That means:
+** narrow-or-widen-dwim
+
+If narrowing is on, widen the buffer. Else narrow on the entity at
+point. That means:
 
  - If a region is active, narrow on the region.
- - If you are on a defun or anything conceptually similar which is
-   recognized in you programming language mode, narrow on that function.
+ - If you are on a =defun= or anything conceptually similar which is
+   recognized in your programming language mode, narrow on that
+   function.
  - If you are on an org subtree, narrow buffer to this tree.
  - If you are on an org source code block, open it in the editor
    (that's a /kind/ of narrowing).
@@ -34,10 +38,30 @@ call this function to narrow on it. That means:
 
 If called with prefix (=C-u=), narrow with a wider scope. E.g. if you
 press two time =C-u= before calling the function, go up two levels
-before narrowing. If you are on a defun, also include the comments
-above.
+before narrowing. If you are on a =defun=, widening the scope means to
+include the comments before the function definition.
+
+** narrow-or-widen-dwim-clone
+
+Call =narrow-or-widen-dwim= in a newly created indirect buffer. This new
+buffer is displayed in the window returned by
+=narrow-or-widen-dwim-window-split-function=, which defaults to
+=window-split-horizontally=.
+
+So effectively, the narrowed part is displayed in a newly created side
+window. Alternatives to splitting horizontally are to set
+=narrow-or-widen-dwim-window-split-function= to the function symbol
+=split-window-vertically= or to a more sophisticated wrapper around
+=split-window=.
+
+If you prefer to switch to the cloned buffer without interfering with
+the window layout, set =narrow-or-widen-dwim-window-split-function= to
+=selected-window=. Maybe it is even possible to write a rule for
+=display-buffer-alist= which positions indirect buffers in the right
+way.
 
 * Credits
 
-I saw this function once somewhere on the blog of =endless parentheses=.
-I copied it and changed it to my need. Here we are.
+I saw the original narrowing function once somewhere on the blog of
+=endless parentheses=. I copied it and changed it to my need. Here we
+are.

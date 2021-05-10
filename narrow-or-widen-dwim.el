@@ -29,6 +29,11 @@
 (defvar narrow-or-widen-dwim--window-start nil
   "INTERNAL. Position correction when widening again.")
 
+(defvar narrow-or-widen-dwim-window-split-function
+  #'split-window-horizontally
+  "Display cloned buffers in a window returned by that function.")
+
+  
 ;;; * Declare major mode specific functions
 
 ;; Declare all major mode specific functions to avoid requir'ing them
@@ -54,6 +59,17 @@
 		  (&optional INCLUDE-COMMENTS))
 
 ;;; * Narrow or widen dwim
+
+(defun narrow-or-widen--switch-buffer-niceley (buf)
+  "Select the window displaying BUF or create a new one.
+The new window is created by calling the function stored in
+`narrow-or-widen-dwim-window-split-function'. It has to return
+the window in which the cloned buffer should be displayed."
+  (when buf
+    (if (get-buffer-window buf)
+	(switch-to-buffer buf)
+      (select-window (funcall narrow-or-widen-dwim-window-split-function))
+      (switch-to-buffer buf t t))))
 
 (defun narrow-or-widen--org-narrow (&optional arg)
   "In org mode, dwim-narrow.
@@ -115,6 +131,16 @@ defun, whichever applies first."
 	   (narrow-to-defun arg)))
 	;; else we don't know what to do:
 	(t (user-error "No suitable narrowing command available for this major mode"))))
+
+;;;###autoload
+(defun narrow-or-widen-dwim-clone (&optional n)
+  "Calls `narrow-or-widen-dwim' in a new indirect buffer."
+  (interactive "p")
+  (declare (interactive-only))
+  (let* ((cloned-buffer (clone-indirect-buffer nil nil t)))
+    (narrow-or-widen--switch-buffer-niceley cloned-buffer)
+    (with-current-buffer cloned-buffer
+      (narrow-or-widen-dwim n))))
 
 (provide 'narrow-or-widen-dwim)
 ;;; narrow-or-widen-dwim.el ends here
