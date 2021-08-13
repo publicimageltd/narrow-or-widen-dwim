@@ -134,9 +134,12 @@ defun, whichever applies first."
 
 ;;;###autoload
 (defun narrow-or-widen-dwim-clone (&optional n)
-  "Calls `narrow-or-widen-dwim' in a new indirect buffer."
+  "Do `narrow-or-widen-dwim' in a new indirect buffer.
+Returns the new buffer."
   (interactive "p")
   (declare (interactive-only))
+  (when (buffer-narrowed-p)
+    (user-error "You have to widen the buffer to clone something"))
   (let* ((calling-buffer (current-buffer))
          (cloned-buffer (clone-indirect-buffer nil nil t)))
     (narrow-or-widen--switch-buffer-niceley cloned-buffer)
@@ -144,7 +147,25 @@ defun, whichever applies first."
       (narrow-or-widen-dwim n))
     (with-current-buffer calling-buffer
       (when (region-active-p)
-        (deactivate-mark)))))
+        (deactivate-mark)))
+    cloned-buffer))
+
+;;;###autoload
+(defun narrow-or-widen-dwim-stash (&optional n)
+  "Move the entity at point in a new buffer."
+  (interactive "p")
+  (declare (interactive-only))
+  (when (buffer-narrowed-p)
+    (user-error "You have to widen the buffer to stash something"))
+  (let* ((orig-buf (current-buffer))
+         (orig-name (buffer-name))
+         (new-buf (narrow-or-widen-dwim-clone n)))
+    (with-current-buffer new-buf
+      (let* ((content (buffer-string)))
+        (widen)
+        (delete-region (point-min) (point-max))
+        (insert content))
+      (rename-buffer (format "from '%s'" orig-name)))))
 
 (provide 'narrow-or-widen-dwim)
 ;;; narrow-or-widen-dwim.el ends here
