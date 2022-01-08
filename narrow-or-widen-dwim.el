@@ -90,7 +90,9 @@ determine the number of levels 'up'"
       (save-excursion
 	(when (> arg 1)
 	  (outline-up-heading (ceiling (/ arg 4)) t))
-	(org-narrow-to-subtree))))))
+        (if (org-before-first-heading-p)
+            (user-error "Point not at a subtree, cannot narrow")
+	  (org-narrow-to-subtree)))))))
 
 ;;;###autoload
 (defun narrow-or-widen-dwim (&optional n)
