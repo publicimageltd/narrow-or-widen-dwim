@@ -1,6 +1,6 @@
 ;;; narrow-or-widen-dwim.el --- Add more intelligence to narrowing or widening  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021
+;; Copyright (C) 2021-2023
 
 ;; Author:  <joerg@joergvolbers.de>
 ;; Keywords: outlines, tools
